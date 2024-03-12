@@ -245,6 +245,18 @@ spec:
 
 ### Explication : 
 
+- apiVersion: networking.istio.io/v1alpha3: Version de l'API Istio utilisée pour ce service virtuel.
+- kind: VirtualService: Type d'objet Istio utilisé pour ce service virtuel.
+- metadata/name: front-end-proxy: Nom attribué à ce service virtuel.
+- spec/hosts: Liste des hôtes pour lesquels ce service virtuel s'applique. Dans ce cas, il s'applique à tous les hôtes avec le wildcard "*".
+- spec/gateways: Liste des passerelles à associer à ce service virtuel. Dans ce cas, il est associé à la passerelle "microservice-gateway".
+- spec/http: Définit les règles de routage HTTP pour ce service virtuel.
+  - match/uri/prefix: /front-end/: Cette règle de correspondance spécifie que ce service virtuel s'applique aux requêtes avec un préfixe d'URI "/front-end/".
+  - rewrite/uri: / Cette règle de réécriture modifie l'URI de la requête en "/", ce qui signifie qu'il réécrit l'URI de la requête à partir de "/front-end/" à "/".
+
+- route/destination: Définit la destination des requêtes correspondantes.
+  - port/number: 80: Numéro de port vers lequel rediriger le trafic. Dans ce cas, il est configuré sur le port 80.
+  - host: front-end-service.default.svc.cluster.local: Nom du service Kubernetes vers lequel rediriger le trafic. Dans ce cas, il est dirigé vers le service "front-end-service" dans l'espace de noms par défaut ("default").
 
 
 ## Déploiement sur Minikube :
