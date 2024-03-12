@@ -1,0 +1,134 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-end-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front-end
+  template:
+    metadata:
+      labels:
+        app: front-end
+    spec:
+      containers:
+      - name: front-end-container
+        image: mb923/front-end:v1
+        imagePullPolicy: Always
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: back-end-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: back-end
+  template:
+    metadata:
+      labels:
+        app: back-end
+    spec:
+      containers:
+        - image: mb923/back-end:v1
+          imagePullPolicy: IfNotPresent
+          name: back-end
+      restartPolicy: Always
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-end-service
+spec:
+  ports:
+    - name: http
+      targetPort: 8080 #port du code 
+      port: 80 #port du service
+  selector:
+    app: front-end
+  type: NodePort
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: back-end-service
+spec:
+  ports:
+    - nodePort: 31280
+      port: 80         
+      protocol: TCP
+      targetPort: 8080  
+  selector:
+    app: back-end
+  type: NodePort
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: back-end-proxy
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - microservice-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /back-end/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: back-end-service.default.svc.cluster.local
+
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: front-end-proxy
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - microservice-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /front-end/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: front-end-service.default.svc.cluster.local
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: microservice-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+
