@@ -57,7 +57,7 @@ Création d'un fichier YAML nommé front-back-app.yml décrivant les déploiemen
 
 ### Création du déploiement Kubernete
 
-(petit texte) 
+L'objet Deployment est utilisé pour garantir que le nombre spécifié de répliques de l'application front-end est toujours en cours d'exécution dans le cluster Kubernetes. Si une réplique échoue ou est supprimée, Kubernetes veillera à ce qu'une nouvelle réplique soit créée pour maintenir le nombre total de répliques spécifié.
 
 ```
 apiVersion: apps/v1
@@ -113,7 +113,7 @@ spec:
 
 ### Création du service kubernetes NodePort : 
 
-(petit texte) 
+Le service front-end est utilisé pour fournir une interface d'accès à notre application front-end à partir d'autres services ou clients à l'intérieur du cluster Kubernetes.
 
 ```
 apiVersion: v1
@@ -160,7 +160,7 @@ spec:
 
 ### Définition d'une Gateway Istio :
 
-(petit texte) 
+La passerekke Istio permet à nos microservices d'être accessibles depuis l'extérieur du cluster Kubernetes.
 
 ```
 apiVersion: networking.istio.io/v1alpha3
@@ -195,7 +195,7 @@ spec:
 
 ### Définition d'un Proxy Istio : 
 
-(petit texte) 
+Le service virtuel Istio permet de gérer le routage du trafic entrant vers différents services en fonction de certains critères.
 
 ```
 apiVersion: networking.istio.io/v1alpha3
