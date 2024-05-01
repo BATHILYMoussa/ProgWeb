@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: mb923/test-back:test-backv1
+          env:
+            - name: DATABASE_CLIENT
+              value: postgres
+            - name: DATABASE_HOST
+              value: postgres-service
+            - name: DATABASE_PORT
+              value: "5432"
+            - name: DATABASE_NAME
+              value: strapi
+            - name: DATABASE_USERNAME
+              value: strapi
+            - name: DATABASE_PASSWORD
+              value: mysecretpassword
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: "1337"
+            - name: APP_KEYS
+              value: "toBeModified1,toBeModified2"
+            - name: API_TOKEN_SALT
+              value: tobemodified
+            - name: ADMIN_JWT_SECRET
+              value: tobemodified
+            - name: TRANSFER_TOKEN_SALT
+              value: tobemodified
+            - name: JWT_SECRET
+              value: tobemodified
+          ports:
+            - containerPort: 1337
